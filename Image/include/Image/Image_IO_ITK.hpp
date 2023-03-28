@@ -43,6 +43,7 @@ odyssee.merveille@gmail.com
 #include <itkMetaDataDictionary.h>
 
 #include "Image.hpp"
+#include <optional>
 #include <typeinfo>
 
 

@@ -328,7 +328,7 @@ void PO_3D(const Image3D<T> &image,
 	// Propagate
 	std::vector<IndexType>::iterator it;
 	int indice;
-    for (it = index_image.begin(), indice = 0 ; it != index_image.end() ;
+    /*for (it = index_image.begin(), indice = 0 ; it != index_image.end() ;
          ++it , ++indice)
 	{
 		if (b[*it])
@@ -349,7 +349,7 @@ void PO_3D(const Image3D<T> &image,
 				}
 			}
 		}
-	}
+    }*/
 }
 
 

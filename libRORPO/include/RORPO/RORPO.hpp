@@ -63,7 +63,7 @@ Image3D<T> RORPO(const Image3D<T> &image, int L, int nbCores, int dilationSize, 
     Image3D<T> RPO7(image.dimX() + 4, image.dimY() + 4, image.dimZ() + 4, 2);
 
     auto orientationsRPO = RPO(image, L, RPO1, RPO2, RPO3, RPO4, RPO5, RPO6, RPO7, nbCores, dilationSize, mask);
-
+    return RPO7;
     // ################### Limit Orientations Treatment #######################
 
     // ------------------------- Computation of Imin --------------------------
@@ -248,6 +248,7 @@ Image3D<T> RORPO(const Image3D<T> &image, int L, int nbCores, int dilationSize, 
     RPOt1.clear_image();
     RPOt5.clear_image();
     RPOt6.clear_image();
+
 
     // Compute RORPO without limit orientations
     Image3D<T> RORPO_res = diff(RPOt7, RPOt4);

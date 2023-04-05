@@ -86,7 +86,8 @@ Image3D<PixelType> Read_Itk_Image(const std::string& image_path)
 	const typename ITKImageType::SizeType& itkSize = itkImage->GetLargestPossibleRegion().GetSize();
 	auto spacing = itkImage->GetSpacing();
 	auto origin = itkImage->GetOrigin();
-	Image3D<PixelType> image(itkSize[0], itkSize[1], itkSize[2],spacing[0],spacing[1],spacing[2],origin[0],origin[1],origin[2]);
+    auto direction = itkImage->GetDirection();
+    Image3D<PixelType> image(itkSize[0], itkSize[1], itkSize[2],spacing[0],spacing[1],spacing[2],origin[0],origin[1],origin[2],direction);
     image.add_data_from_pointer(itkImage->GetBufferPointer());
 
     return image;
@@ -126,7 +127,8 @@ Image3D<PixelType> Read_Itk_Image_Series(const std::string& image_path)
 	const typename ITKImageType::SizeType& itkSize = itkImage->GetLargestPossibleRegion().GetSize();
 	auto spacing = itkImage->GetSpacing();
 	auto origin = itkImage->GetOrigin();
-	Image3D<PixelType> image(itkSize[0], itkSize[1], itkSize[2],spacing[0],spacing[1],spacing[2],origin[0],origin[1],origin[2]);
+    auto direction = itkImage->GetDirection();
+    Image3D<PixelType> image(itkSize[0], itkSize[1], itkSize[2],spacing[0],spacing[1],spacing[2],origin[0],origin[1],origin[2],direction);
 
 
     image.add_data_from_pointer(itkImage->GetBufferPointer());
@@ -158,10 +160,13 @@ void Write_Itk_Image( Image3D<PixelType>& image, const std::string& image_path )
 	spacing[0] = image.spacingX();
 	spacing[1] = image.spacingY();
 	spacing[2] = image.spacingZ();
+    typename ImportImageFilterType::DirectionType direction;
+    direction = image.direction();
 
 	importFilter->SetRegion(region);
 	importFilter->SetOrigin(origin);
 	importFilter->SetSpacing(spacing);
+    importFilter->SetDirection(direction);
 
 	const bool importImageFilterWillOwnTheBuffer = false;
 	importFilter->SetImportPointer( image.get_pointer(), image.size(), importImageFilterWillOwnTheBuffer );

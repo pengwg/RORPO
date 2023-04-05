@@ -77,7 +77,8 @@ void normalize_and_write_output(std::string outputPath, bool verbose, Image3D<Pi
                                          multiscale.spacingZ(),
                                          multiscale.originX(),
                                          multiscale.originY(),
-                                         multiscale.originZ()
+                                         multiscale.originZ(),
+                                         multiscale.direction()
     );
 
     if (max - min == 0)

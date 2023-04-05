@@ -37,7 +37,7 @@ odyssee.merveille@gmail.com
 #include <string>
 #include <vector>
 #include <algorithm>
-
+#include <itkImageBase.h>
 
 // ###################################################################################################################
 // ############################################### 2D IMAGE ##########################################################
@@ -137,12 +137,13 @@ public :
 		float spacingZ,
 		double originX,
 		double originY,
-		double originZ,
+        double originZ,
+        itk::ImageBase<3>::DirectionType direction,
 		 T value=0):
 		m_nDimX(dimX), m_nDimY(dimY), m_nDimZ(dimZ), m_nSize(dimX*dimY*dimZ), 
 		m_vImage(dimX*dimY*dimZ, value),
-		m_spacingX(spacingX),m_spacingY(spacingY),m_spacingZ(spacingZ),
-		m_originX(originX),m_originY(originY),m_originZ(originZ){}
+        m_spacingX(spacingX),m_spacingY(spacingY),m_spacingZ(spacingZ),
+        m_originX(originX),m_originY(originY),m_originZ(originZ),m_direction(direction){}
 
 	Image3D( unsigned int dimX, unsigned int dimY, unsigned int dimZ, T value=0 ):
 		m_nDimX(dimX), m_nDimY(dimY), m_nDimZ(dimZ), m_nSize(dimX*dimY*dimZ), m_vImage(dimX*dimY*dimZ, value),
@@ -152,7 +153,7 @@ public :
 	Image3D( const Image3D& image ):
 	 	m_nDimX(image.m_nDimX), m_nDimY(image.m_nDimY), m_nDimZ(image.m_nDimZ), m_nSize(image.m_nSize), m_vImage(image.m_vImage),
 		m_spacingX(image.m_spacingX),m_spacingY(image.m_spacingY),m_spacingZ(image.m_spacingZ),
-		m_originX(0.0f),m_originY(0.0f),m_originZ(0.0f){}
+        m_originX(0.0f),m_originY(0.0f),m_originZ(0.0f), m_direction(image.m_direction){}
 
 	~Image3D(){}
 
@@ -222,6 +223,10 @@ public :
 		return m_originZ;
 	}
 
+    const itk::ImageBase<3>::DirectionType direction() const{
+        return m_direction;
+    }
+
 	bool empty() const {
 		return m_vImage.empty();
 	}
@@ -255,7 +260,7 @@ public :
 
 	// Return a new image "bordered_image" which is the self image with a "border"-pixel border
 	Image3D<T> add_border(int border, int value=0) const {
-		Image3D<T> bordered_image(m_nDimX + 2 * border, m_nDimY + 2 * border, m_nDimZ + 2 * border,m_spacingX,m_spacingY,m_spacingZ,m_originX,m_originY,m_originZ, value);
+        Image3D<T> bordered_image(m_nDimX + 2 * border, m_nDimY + 2 * border, m_nDimZ + 2 * border,m_spacingX,m_spacingY,m_spacingZ,m_originX,m_originY,m_originZ,m_direction,value);
 		for (int z = 0; z < m_nDimZ ; ++z)
 			for (int y = 0 ; y < m_nDimY ; ++y)
 				for (int x = 0 ; x < m_nDimX ; ++x)
@@ -294,7 +299,7 @@ public :
 	// return a new image which is the copy of this
 	const Image3D<unsigned char> copy_image_2_uchar() const {
 
-		Image3D<unsigned char> copy(m_nDimX , m_nDimY , m_nDimZ, m_spacingX, m_spacingY, m_spacingZ,m_originX,m_originY,m_originZ);
+        Image3D<unsigned char> copy(m_nDimX , m_nDimY , m_nDimZ, m_spacingX, m_spacingY, m_spacingZ,m_originX,m_originY,m_originZ,m_direction);
 		auto it1 = m_vImage.begin();
 		auto it2 = copy.get_data().begin();
 		for ( ; it1 != m_vImage.end() ; ++it1, ++it2 )
@@ -304,7 +309,7 @@ public :
 
 	// return a new image which is the copy of this
 	Image3D copy_image() const {
-		Image3D copy(m_nDimX , m_nDimY , m_nDimZ,m_spacingX,m_spacingY,m_spacingZ,m_originX,m_originY,m_originZ);
+        Image3D copy(m_nDimX , m_nDimY , m_nDimZ,m_spacingX,m_spacingY,m_spacingZ,m_originX,m_originY,m_originZ,m_direction);
 		copy.add_data_from_pointer(m_vImage.data());
 		return copy;
 	}
@@ -326,6 +331,7 @@ public :
 			m_originX = image.originX();
 			m_originY = image.originY();
 			m_originZ = image.originZ();
+            m_direction = image.direction();
 		}
 		m_vImage.assign(image.get_data().begin(),image.get_data().end());
 	}
@@ -380,6 +386,8 @@ public :
 		double m_originX;
 		double m_originY;
 		double m_originZ;
+
+        itk::ImageBase<3>::DirectionType m_direction;
 
 		std::vector<T>m_vImage;
 };

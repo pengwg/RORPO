@@ -15,6 +15,7 @@ namespace pyRORPO
         std::vector<double>& origin)
     {
         auto bufImage = imageInput.request();
+        itk::ImageBase<3>::DirectionType direction;
 
         auto image = Image3D<PixelType>(
             bufImage.shape[2], 
@@ -25,7 +26,8 @@ namespace pyRORPO
             spacing[2],
             origin[0],
             origin[1],
-            origin[2]
+            origin[2],
+            direction
         );
 
         image.add_data_from_pointer((PixelType*) bufImage.ptr);

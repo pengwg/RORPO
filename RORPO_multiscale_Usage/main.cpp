@@ -298,7 +298,7 @@ int main(int argc, char **argv) {
     scaleList[0] = scaleMin;
 
     for (int i = 1; i < nbScales; ++i)
-        scaleList[i] = int(scaleMin * pow(factor, i));
+        scaleList[i] = round(scaleMin * pow(factor, i));
 
     if (verbose){
         std::cout << "Scales : ";
